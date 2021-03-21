@@ -1,0 +1,7 @@
+COMMAND_LAUNCH_APP_NAME = "Launch app"
+COMMAND_CLEAR_APP_DATA_NAME = "Clear app data"
+COMMAND_SLEEP_NAME = "Wait for x seconds"
+COMMAND_TAP_ON_VIEW_BY_ID_NAME = "Tap on view (By id)"
+COMMAND_PRESS_BACK_NAME = "Press back"
+COMMAND_INPUT_TEXT_ON_KEYBOARD_NAME = "Input text on keyboard"
+COMMAND_PRESS_ENTER_ON_KEYBOARD_NAME = "Press enter on keyboard"

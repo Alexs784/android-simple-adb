@@ -1,0 +1,2 @@
+kivy~=2.0.0
+SQLAlchemy~=1.3.22

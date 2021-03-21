@@ -6,8 +6,7 @@ from kivy.uix.popup import Popup
 
 
 def android_sdk_location_is_valid(directory_path):
-    if directory_path.__contains__("~"):
-        directory_path = path.expanduser(directory_path)
+    directory_path = optionally_expand_user_directory(directory_path)
 
     if path.exists(directory_path):
         platform_tools_directory = path.join(directory_path, "platform-tools")
@@ -15,6 +14,12 @@ def android_sdk_location_is_valid(directory_path):
         return path.isfile(adb_file)
     else:
         return False
+
+
+def optionally_expand_user_directory(directory_path):
+    if directory_path.__contains__("~"):
+        directory_path = path.expanduser(directory_path)
+    return directory_path
 
 
 def get_stored_sdk_directory():
@@ -31,9 +36,10 @@ def get_adb():
 
 
 def store_sdk_directory(sdk_location):
-    if android_sdk_location_is_valid(sdk_location):
+    location_to_check = optionally_expand_user_directory(sdk_location)
+    if android_sdk_location_is_valid(location_to_check):
         with shelve.open("settings") as storage:
-            storage["sdk_directory"] = sdk_location
+            storage["sdk_directory"] = location_to_check
         return True
     else:
         Popup(

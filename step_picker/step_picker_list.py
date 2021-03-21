@@ -7,6 +7,7 @@ from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen
 from kivy.uix.textinput import TextInput
 
+from assets.asset_util import resource_path
 from commands.placeholder_constants import PARAMETER_PLACEHOLDER, DEVICE_SERIAL_NUMBER_PLACEHOLDER
 from screen_manager.screen_constants import SCRIPT_EDITOR_SCREEN
 from screen_manager.utils import remove_screen, get_screen_by_name
@@ -35,11 +36,12 @@ class SetPickerRecycleView(Screen):
 
         layout.add_widget(root)
 
+        back_button_image = resource_path('assets/back_button.png')
         back_button = ImageButton(
             size_hint=(.11, .11),
             font_size=50,
             pos_hint={'center_x': .08, 'center_y': .08},
-            image_source="assets/back_button.png"
+            image_source=back_button_image
         )
         back_button.bind(on_release=self.go_back)
 

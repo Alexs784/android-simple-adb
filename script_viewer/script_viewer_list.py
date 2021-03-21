@@ -1,6 +1,7 @@
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen, SlideTransition
 
+from assets.asset_util import resource_path
 from screen_manager.screen_constants import SCRIPT_EDITOR_SCREEN
 from screen_manager.utils import remove_screen
 from script_editor.editor_screen import ScriptEditorScreen
@@ -19,10 +20,11 @@ class ScriptViewRecycleView(Screen):
 
         layout.add_widget(root)
 
+        back_button_image = resource_path('assets/back_button.png')
         back_button = ImageButton(
             size_hint=(.11, .11),
             pos_hint={'center_x': .08, 'center_y': .08},
-            image_source="assets/back_button.png"
+            image_source=back_button_image
         )
         back_button.bind(on_press=self.go_back)
 

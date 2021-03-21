@@ -1,3 +1,6 @@
+import os
+import sys
+
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.floatlayout import FloatLayout
@@ -5,6 +8,7 @@ from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen, SlideTransition
 from kivy.uix.textinput import TextInput
 
+from assets.asset_util import resource_path
 from commands.commands_utils import execute_adb_command_getting_result, execute_command_getting_result
 from devices.device_manager import get_connected_devices
 from screen_manager.screen_constants import STEP_PICKER_SCREEN
@@ -57,28 +61,31 @@ class ScriptEditorScreen(Screen):
         self.update_add_step_button_state()
         layout.add_widget(self.select_device_button)
 
+        run_button_image = resource_path('assets/run_button.png')
         self.run_script_button = ImageButton(
             size_hint=(image_buttons_width, image_buttons_height),
             background_color=positive_button_background,
             pos_hint={'center_x': .80, 'center_y': buttons_bottom_alignment_value},
-            image_source="assets/run_button.png"
+            image_source=run_button_image
         )
         self.run_script_button.bind(on_release=self.run_script)
         layout.add_widget(self.run_script_button)
 
+        save_button_image = resource_path('assets/save_button.png')
         save_button = ImageButton(
             size_hint=(image_buttons_width, image_buttons_height),
             background_color=positive_button_background,
             pos_hint={'center_x': .92, 'center_y': buttons_bottom_alignment_value},
-            image_source="assets/save_button.png"
+            image_source=save_button_image
         )
         save_button.bind(on_release=self.on_save_button_click)
         layout.add_widget(save_button)
 
+        back_button_image = resource_path('assets/back_button.png')
         back_button = ImageButton(
             size_hint=(image_buttons_width, image_buttons_height),
             pos_hint={'center_x': .08, 'center_y': buttons_bottom_alignment_value},
-            image_source="assets/back_button.png"
+            image_source=back_button_image
         )
         back_button.bind(on_release=self.go_back)
         layout.add_widget(back_button)

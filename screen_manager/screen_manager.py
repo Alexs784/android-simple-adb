@@ -9,7 +9,7 @@ from sdk_setter.utils import get_stored_sdk_directory, android_sdk_location_is_v
 
 def should_ask_for_android_sdk_location():
     stored_sdk_location = get_stored_sdk_directory()
-    return not android_sdk_location_is_valid(stored_sdk_location)
+    return not android_sdk_location_is_valid(stored_sdk_location) or stored_sdk_location.__contains__('~')
 
 
 class ScreenManagerApp(App):

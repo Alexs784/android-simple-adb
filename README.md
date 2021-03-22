@@ -41,4 +41,5 @@ From here we can run the script, save it or add more steps. We can also change d
 - [ ] Option to see each step adb command(s)
 - [ ] Option to delete a step
 - [ ] Option to delete a script
+- [ ] Option to search adb commands
 - [ ] Support more adb commands

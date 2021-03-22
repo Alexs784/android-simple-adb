@@ -37,9 +37,10 @@ From here we can run the script, save it or add more steps. We can also change d
 ## Plans
 - [ ] Test Windows support
 - [ ] Test Linux support
-- [ ] Improve step's parameter UI by adding descriptions
-- [ ] Option to see each step adb command(s)
-- [ ] Option to delete a step
+- [ ] Improve step's parameter input UI by adding parameter descriptions
+- [ ] Option to see each step's adb command(s)
+- [ ] Option to delete a step from a script
 - [ ] Option to delete a script
 - [ ] Option to search adb commands
 - [ ] Support more adb commands
+- [ ] Auto detect Android SDK

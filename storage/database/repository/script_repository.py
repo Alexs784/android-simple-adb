@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from storage.database.database_manager import get_session
 from storage.database.model.user_script import UserScript
 
@@ -9,8 +11,10 @@ def get_scripts():
     return scripts
 
 
-def create_script_in_database(name="Untitled"):
-    script = UserScript(name=name)
+def create_script_in_database():
+    currentDateTime = datetime.now()
+    scriptName = currentDateTime.strftime("%d-%m-%Y %H:%M")
+    script = UserScript(name=scriptName)
     session = get_session()
     session.add(script)
     session.commit()

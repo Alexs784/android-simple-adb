@@ -12,9 +12,9 @@ def get_scripts():
 
 
 def create_script_in_database():
-    currentDateTime = datetime.now()
-    scriptName = currentDateTime.strftime("%d-%m-%Y %H:%M")
-    script = UserScript(name=scriptName)
+    current_date_time = datetime.now()
+    script_name = current_date_time.strftime("%d-%m-%Y %H:%M")
+    script = UserScript(name=script_name)
     session = get_session()
     session.add(script)
     session.commit()
@@ -27,5 +27,12 @@ def update_script_name(script_id, script_name):
     session = get_session()
     script = session.query(UserScript).filter_by(id=script_id).first()
     script.name = script_name
+    session.commit()
+    session.close()
+
+
+def delete_script(script_id):
+    session = get_session()
+    session.query(UserScript).filter(UserScript.id == script_id).delete()
     session.commit()
     session.close()

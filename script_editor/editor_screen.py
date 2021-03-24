@@ -11,11 +11,12 @@ from kivy.uix.textinput import TextInput
 from assets.asset_util import resource_path
 from commands.commands_utils import execute_adb_command_getting_result, execute_command_getting_result
 from devices.device_manager import get_connected_devices
+from popup.confirmation_popup import show_confirmation_popup
 from screen_manager.screen_constants import STEP_PICKER_SCREEN
 from screen_manager.utils import remove_screen
 from script_editor.editor_recycle_view_item import build, EditorRecycleViewItem
 from step_picker.step_picker_list import SetPickerRecycleView
-from storage.database.repository.script_repository import create_script_in_database, update_script_name
+from storage.database.repository.script_repository import create_script_in_database, update_script_name, delete_script
 from storage.database.repository.user_step_repository import get_user_steps_for_script
 from ui.image_button import ImageButton
 
@@ -41,6 +42,7 @@ class ScriptEditorScreen(Screen):
         image_buttons_width = .11
         image_buttons_height = .11
         positive_button_background = (0.38, 1.70, 0.38, 1)
+        negative_button_background = (2.13, 0.05, 0.05, 1)
 
         self.add_step_button = Button(
             text="Add step",
@@ -60,6 +62,16 @@ class ScriptEditorScreen(Screen):
         self.select_device_button.bind(on_release=self.show_connected_devices)
         self.update_add_step_button_state()
         layout.add_widget(self.select_device_button)
+
+        delete_button_image = resource_path('assets/delete_button.png')
+        delete_script_button = ImageButton(
+            size_hint=(image_buttons_width, image_buttons_height),
+            background_color=negative_button_background,
+            pos_hint={'center_x': .68, 'center_y': buttons_bottom_alignment_value},
+            image_source=delete_button_image
+        )
+        delete_script_button.bind(on_release=self.optionally_delete_script)
+        layout.add_widget(delete_script_button)
 
         run_button_image = resource_path('assets/run_button.png')
         self.run_script_button = ImageButton(
@@ -151,6 +163,17 @@ class ScriptEditorScreen(Screen):
                 result = execute_command_getting_result(user_step.command.value)
 
             print(result)
+
+    def optionally_delete_script(self, *args):
+        show_confirmation_popup(
+            "Deleting script",
+            "Are you sure you want to delete this script?",
+            self.delete_script
+        )
+
+    def delete_script(self, *args):
+        delete_script(self.script_id)
+        self.go_back()
 
     def show_save_script_pop_up(self):
         layout = FloatLayout()

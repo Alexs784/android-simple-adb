@@ -72,7 +72,6 @@ class SetPickerRecycleView(Screen):
         param_index = 1
         param_placeholder = PARAMETER_PLACEHOLDER + str(param_index)
         user_steps = []
-        # TODO: set command_id equals for commands belinging to the same step
         command_id = uuid.uuid4().__repr__()
 
         for command in self.step_chosen.commands:

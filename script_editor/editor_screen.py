@@ -12,8 +12,8 @@ from assets.asset_util import resource_path
 from commands.commands_utils import execute_adb_command_getting_result, execute_command_getting_result
 from devices.device_manager import get_connected_devices
 from popup.confirmation_popup import show_confirmation_popup
-from screen_manager.screen_constants import STEP_PICKER_SCREEN
-from screen_manager.utils import remove_screen
+from screen_manager.screen_constants import STEP_PICKER_SCREEN, SCRIPT_LIST_VIEWER_SCREEN
+from screen_manager.utils import remove_screen, get_screen_by_name
 from script_editor.editor_recycle_view_item import build, EditorRecycleViewItem
 from step_picker.step_picker_list import SetPickerRecycleView
 from storage.database.repository.script_repository import create_script_in_database, update_script_name, delete_script
@@ -173,6 +173,9 @@ class ScriptEditorScreen(Screen):
 
     def delete_script(self, *args):
         delete_script(self.script_id)
+        script_viewer_screen = get_screen_by_name(self.manager, SCRIPT_LIST_VIEWER_SCREEN)
+        if script_viewer_screen is not None:
+            script_viewer_screen.update_scripts_list()
         self.go_back()
 
     def show_save_script_pop_up(self):

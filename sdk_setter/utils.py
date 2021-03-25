@@ -51,7 +51,6 @@ def store_sdk_directory(sdk_location):
                 valign="top",
                 size_hint=(.4, .4),
                 pos_hint={'center_x': .5, 'center_y': 0.8}
-
             ),
             size_hint=(0.5, 0.5),
             title_align="center",

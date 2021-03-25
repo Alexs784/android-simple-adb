@@ -15,10 +15,10 @@ class ScriptViewRecycleView(Screen):
         super(ScriptViewRecycleView, self).__init__(**kwargs)
 
         layout = FloatLayout()
-        root = build()
-        root.data = self.load_stored_scripts()
+        self.root = build()
+        self.update_scripts_list()
 
-        layout.add_widget(root)
+        layout.add_widget(self.root)
 
         back_button_image = resource_path('assets/back_button.png')
         back_button = ImageButton(
@@ -35,14 +35,17 @@ class ScriptViewRecycleView(Screen):
     def go_back(self, *args):
         remove_screen(self.manager, self)
 
+    def on_script_chosen(self, script_id):
+        self.manager.add_widget(ScriptEditorScreen(name=SCRIPT_EDITOR_SCREEN, script_id=script_id))
+        self.manager.transition = SlideTransition()
+        self.manager.current = self.manager.next()
+
+    def update_scripts_list(self):
+        self.root.data = self.load_stored_scripts()
+
     def load_stored_scripts(self):
         list_items = []
         scripts = get_scripts()
         for script in scripts:
             list_items.append(ScriptRecycleViewItem().build(root_widget=self, script_id=script.id, text=script.name))
         return list_items
-
-    def on_script_chosen(self, script_id):
-        self.manager.add_widget(ScriptEditorScreen(name=SCRIPT_EDITOR_SCREEN, script_id=script_id))
-        self.manager.transition = SlideTransition()
-        self.manager.current = self.manager.next()

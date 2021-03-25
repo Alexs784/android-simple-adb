@@ -1,6 +1,3 @@
-import os
-import sys
-
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.floatlayout import FloatLayout

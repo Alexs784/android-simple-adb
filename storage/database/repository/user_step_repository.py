@@ -7,6 +7,7 @@ def get_user_steps_for_script(script_id):
     user_steps = session.query(UserStep) \
         .filter_by(script_id=script_id) \
         .group_by(UserStep.command_id) \
+        .order_by(UserStep.time_created.asc()) \
         .all()
     session.close()
     return user_steps

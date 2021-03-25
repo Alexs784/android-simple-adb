@@ -113,16 +113,14 @@ class SetPickerRecycleView(Screen):
         )
         layout.add_widget(param_name_label)
 
-        # TODO: add info toast (if present)
         if param_name in self.params_descriptions:
             param_description = self.params_descriptions[param_name]
-            print(param_description)
 
             help_button_image = resource_path('assets/help_button.png')
             help_param_button = ImageButton(
                 size_hint=(.08, .12),
                 background_color=(1, 1, 1, 1),
-                pos_hint={'center_x': .62, 'center_y': .9},
+                pos_hint={'center_x': .8, 'center_y': .9},
                 image_source=help_button_image
             )
             help_param_button.bind(on_release=lambda x: show_info_popup("Info", param_description))

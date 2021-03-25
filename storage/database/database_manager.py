@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 
 from commands.name_constants import COMMAND_TAP_ON_VIEW_BY_ID_NAME, COMMAND_SLEEP_NAME, COMMAND_CLEAR_APP_DATA_NAME, \
     COMMAND_LAUNCH_APP_NAME, COMMAND_PRESS_BACK_NAME, COMMAND_INPUT_TEXT_ON_KEYBOARD_NAME, \
-    COMMAND_PRESS_ENTER_ON_KEYBOARD_NAME
+    COMMAND_PRESS_ENTER_ON_KEYBOARD_NAME, COMMAND_TAKE_SCREENSHOT_NAME
 from commands.placeholder_constants import DEVICE_SERIAL_NUMBER_PLACEHOLDER, PARAMETER_PLACEHOLDER
 from storage import Base
 from storage.database.model.command import Command
@@ -94,6 +94,19 @@ def get_supported_steps():
             commands=[Command(device_serial_number_command() + " shell input keyevent 66", True)],
             parameters_names=[],
             parameters_descriptions={}
+        ),
+        get_step(
+            name=COMMAND_TAKE_SCREENSHOT_NAME,
+            commands=[
+                Command(device_serial_number_command() + " shell screencap -p /sdcard/screenshot.png", True),
+                Command(
+                    device_serial_number_command() + " pull /sdcard/screenshot.png " + PARAMETER_PLACEHOLDER + "1", True
+                )
+            ],
+            parameters_names=["Destination folder"],
+            parameters_descriptions={
+                "Destination folder": "The folder where the screenshot is going to be saved. Must be an already existing folder on your machine "
+            }
         )
     ]
 

@@ -9,6 +9,7 @@ from kivy.uix.textinput import TextInput
 
 from assets.asset_util import resource_path
 from commands.placeholder_constants import PARAMETER_PLACEHOLDER, DEVICE_SERIAL_NUMBER_PLACEHOLDER
+from popup.info_popup import show_info_popup
 from screen_manager.screen_constants import SCRIPT_EDITOR_SCREEN
 from screen_manager.utils import remove_screen, get_screen_by_name
 from step_picker.step_recycle_view_item import build, StepRecycleViewItem
@@ -26,6 +27,7 @@ class SetPickerRecycleView(Screen):
         self.script_id = script_id
         self.device_id = device_id
         self.params_names = None
+        self.params_descriptions = None
         self.params_set = []
         self.step_chosen = None
 
@@ -58,6 +60,7 @@ class SetPickerRecycleView(Screen):
     def on_step_chosen(self, step_id):
         self.step_chosen = get_step_by_id(step_id)
         self.params_names = self.step_chosen.parameters_names
+        self.params_descriptions = self.step_chosen.parameters_descriptions
         self.check_if_param_needs_to_be_chosen()
         print(self.step_chosen.name)
 
@@ -111,6 +114,19 @@ class SetPickerRecycleView(Screen):
         layout.add_widget(param_name_label)
 
         # TODO: add info toast (if present)
+        if param_name in self.params_descriptions:
+            param_description = self.params_descriptions[param_name]
+            print(param_description)
+
+            help_button_image = resource_path('assets/help_button.png')
+            help_param_button = ImageButton(
+                size_hint=(.08, .12),
+                background_color=(1, 1, 1, 1),
+                pos_hint={'center_x': .62, 'center_y': .9},
+                image_source=help_button_image
+            )
+            help_param_button.bind(on_release=lambda x: show_info_popup("Info", param_description))
+            layout.add_widget(help_param_button)
 
         param_input = TextInput(
             font_size=40,

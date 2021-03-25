@@ -3,10 +3,8 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 
-from popup.popup_utils import dismiss_popup
 
-
-def show_confirmation_popup(title, message, positive_callback, negative_callback=None):
+def show_info_popup(title, message):
     layout = FloatLayout()
 
     popup = Popup(
@@ -27,22 +25,13 @@ def show_confirmation_popup(title, message, positive_callback, negative_callback
     )
     layout.add_widget(message_label)
 
-    cancel_button = Button(
-        text="Cancel",
-        size_hint=(.3, .25),
-        font_size=35,
-        pos_hint={'center_x': .3, 'center_y': .2}
-    )
-    cancel_button.bind(on_press=lambda x: dismiss_popup(negative_callback, popup))
-    layout.add_widget(cancel_button)
-
     positive_button = Button(
-        text="Yes",
+        text="Ok",
         size_hint=(.3, .25),
         font_size=35,
-        pos_hint={'center_x': .7, 'center_y': .2}
+        pos_hint={'center_x': .5, 'center_y': .2}
     )
-    positive_button.bind(on_press=lambda x: dismiss_popup(positive_callback, popup))
+    positive_button.bind(on_release=lambda x: popup.dismiss())
     layout.add_widget(positive_button)
 
     popup.open()

@@ -2,11 +2,21 @@ from storage.database.database_manager import get_session
 from storage.database.model.user_step import UserStep
 
 
-def get_user_steps_for_script(script_id):
+def get_grouped_user_steps_for_script(script_id):
     session = get_session()
     user_steps = session.query(UserStep) \
         .filter_by(script_id=script_id) \
         .group_by(UserStep.command_id) \
+        .order_by(UserStep.time_created.asc()) \
+        .all()
+    session.close()
+    return user_steps
+
+
+def get_user_steps_for_script(script_id):
+    session = get_session()
+    user_steps = session.query(UserStep) \
+        .filter_by(script_id=script_id) \
         .order_by(UserStep.time_created.asc()) \
         .all()
     session.close()

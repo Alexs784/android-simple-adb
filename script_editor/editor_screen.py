@@ -14,7 +14,8 @@ from screen_manager.utils import remove_screen, get_screen_by_name
 from script_editor.editor_recycle_view_item import build, EditorRecycleViewItem
 from step_picker.step_picker_list import SetPickerRecycleView
 from storage.database.repository.script_repository import create_script_in_database, update_script_name, delete_script
-from storage.database.repository.user_step_repository import get_user_steps_for_script
+from storage.database.repository.user_step_repository import get_grouped_user_steps_for_script, \
+    get_user_steps_for_script
 from ui.image_button import ImageButton
 
 
@@ -142,17 +143,14 @@ class ScriptEditorScreen(Screen):
         disable = len(user_steps_for_script) == 0
         self.run_script_button.set_disabled(disable)
 
-    def get_user_steps_for_this_script(self):
-        return get_user_steps_for_script(self.script_id)
-
     def update_user_steps_list(self):
-        user_steps_for_script = self.get_user_steps_for_this_script()
+        user_steps_for_script = get_grouped_user_steps_for_script(self.script_id)
         self.update_run_script_button_state(user_steps_for_script)
         self.user_steps_list.data = [EditorRecycleViewItem().build(root_widget=self, text=item.name, step_id=item.id)
                                      for item in user_steps_for_script]
 
     def run_script(self, *args):
-        user_steps_for_script = self.get_user_steps_for_this_script()
+        user_steps_for_script = get_user_steps_for_script(self.script_id)
         for user_step in user_steps_for_script:
             if user_step.command.is_adb:
                 result = execute_adb_command_getting_result(user_step.command.value)

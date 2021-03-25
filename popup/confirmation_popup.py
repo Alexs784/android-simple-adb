@@ -1,3 +1,4 @@
+from kivy.metrics import dp
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
@@ -22,8 +23,8 @@ def show_confirmation_popup(title, message, positive_callback, negative_callback
         font_size=35,
         halign="center",
         valign="top",
-        size_hint=(.8, .4),
-        pos_hint={'center_x': .5, 'center_y': .7}
+        text_size=(dp(350), dp(150)),
+        pos_hint={'center_x': .5, 'center_y': .6}
     )
     layout.add_widget(message_label)
 

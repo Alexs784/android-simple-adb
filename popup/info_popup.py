@@ -1,11 +1,12 @@
+from kivy.metrics import dp
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
-from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 
 
 def show_info_popup(title, message):
-    layout = FloatLayout()
+    layout = BoxLayout(orientation='vertical')
 
     popup = Popup(
         title=title,
@@ -20,7 +21,7 @@ def show_info_popup(title, message):
         font_size=35,
         halign="center",
         valign="top",
-        size_hint=(.8, .4),
+        text_size=(dp(350), dp(150)),
         pos_hint={'center_x': .5, 'center_y': .7}
     )
     layout.add_widget(message_label)

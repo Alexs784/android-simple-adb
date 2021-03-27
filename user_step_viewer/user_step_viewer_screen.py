@@ -5,7 +5,8 @@ from kivy.uix.screenmanager import Screen
 from assets.asset_util import resource_path, negative_button_background, image_buttons_width, image_buttons_height, \
     buttons_bottom_alignment_value
 from popup.confirmation_popup import show_confirmation_popup
-from screen_manager.utils import remove_screen
+from screen_manager.screen_constants import SCRIPT_EDITOR_SCREEN
+from screen_manager.utils import remove_screen, get_screen_by_name
 from storage.database.repository.user_step_repository import delete_user_steps, get_user_steps
 from ui.image_button import ImageButton
 from kivy.uix.label import Label
@@ -69,5 +70,7 @@ class UserStepViewerScreen(Screen):
     def delete_script(self):
         print(self.user_step_command_id)
         delete_user_steps(self.user_step_command_id)
+        script_editor_screen = get_screen_by_name(self.manager, SCRIPT_EDITOR_SCREEN)
+        if script_editor_screen is not None:
+            script_editor_screen.update_user_steps_list()
         self.go_back()
-        # TODO refresh step list in editor screen

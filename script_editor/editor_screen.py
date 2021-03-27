@@ -143,8 +143,10 @@ class ScriptEditorScreen(Screen):
     def update_user_steps_list(self):
         user_steps_for_script = get_grouped_user_steps_for_script(self.script_id)
         self.update_run_script_button_state(user_steps_for_script)
-        self.user_steps_list.data = [EditorRecycleViewItem().build(root_widget=self, text=item.name, user_step_commmand_id=item.command_id)
-                                     for item in user_steps_for_script]
+        self.user_steps_list.data = [
+            EditorRecycleViewItem().build(root_widget=self, text=item.name, user_step_commmand_id=item.command_id)
+            for item in user_steps_for_script
+        ]
 
     def run_script(self, *args):
         user_steps_for_script = get_user_steps_for_script(self.script_id)
@@ -217,6 +219,7 @@ class ScriptEditorScreen(Screen):
         self.go_back(self)
 
     def on_user_step_click(self, user_step_command_id):
-        self.manager.add_widget(UserStepViewerScreen(name=STEP_VIEWER_SCREEN, user_step_command_id=user_step_command_id))
+        self.manager.add_widget(
+            UserStepViewerScreen(name=STEP_VIEWER_SCREEN, user_step_command_id=user_step_command_id))
         self.manager.transition = SlideTransition()
         self.manager.current = self.manager.next()

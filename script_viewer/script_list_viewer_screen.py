@@ -10,9 +10,9 @@ from storage.database.repository.script_repository import get_scripts
 from ui.image_button import ImageButton
 
 
-class ScriptViewRecycleView(Screen):
+class ScriptListViewerScreen(Screen):
     def __init__(self, **kwargs):
-        super(ScriptViewRecycleView, self).__init__(**kwargs)
+        super(ScriptListViewerScreen, self).__init__(**kwargs)
 
         layout = FloatLayout()
         self.root = build()

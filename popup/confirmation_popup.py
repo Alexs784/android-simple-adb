@@ -20,7 +20,7 @@ def show_confirmation_popup(title, message, positive_callback, negative_callback
 
     message_label = Label(
         text=message,
-        font_size=35,
+        font_size=40,
         halign="center",
         valign="top",
         text_size=(dp(350), dp(150)),

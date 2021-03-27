@@ -12,7 +12,7 @@ from popup.confirmation_popup import show_confirmation_popup
 from screen_manager.screen_constants import STEP_PICKER_SCREEN, SCRIPT_LIST_VIEWER_SCREEN
 from screen_manager.utils import remove_screen, get_screen_by_name
 from script_editor.editor_recycle_view_item import build, EditorRecycleViewItem
-from step_picker.step_picker_list import SetPickerRecycleView
+from step_picker.step_picker_list_screen import StepPickerListScreen
 from storage.database.repository.script_repository import create_script_in_database, update_script_name, delete_script
 from storage.database.repository.user_step_repository import get_grouped_user_steps_for_script, \
     get_user_steps_for_script
@@ -114,7 +114,7 @@ class ScriptEditorScreen(Screen):
 
     def show_steps_list(self, *args):
         self.manager.add_widget(
-            SetPickerRecycleView(name=STEP_PICKER_SCREEN, script_id=self.script_id, device_id=self.selected_device_id))
+            StepPickerListScreen(name=STEP_PICKER_SCREEN, script_id=self.script_id, device_id=self.selected_device_id))
         self.manager.transition = SlideTransition()
         self.manager.current = self.manager.next()
 

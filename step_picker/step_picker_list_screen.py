@@ -1,5 +1,6 @@
 import uuid
 
+from kivy.metrics import dp
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
@@ -20,9 +21,9 @@ from storage.database.repository.user_step_repository import save_user_steps_in_
 from ui.image_button import ImageButton
 
 
-class SetPickerRecycleView(Screen):
+class StepPickerListScreen(Screen):
     def __init__(self, script_id, device_id, **kwargs):
-        super(SetPickerRecycleView, self).__init__(**kwargs)
+        super(StepPickerListScreen, self).__init__(**kwargs)
 
         self.script_id = script_id
         self.device_id = device_id
@@ -30,6 +31,7 @@ class SetPickerRecycleView(Screen):
         self.params_descriptions = None
         self.params_set = []
         self.step_chosen = None
+        self.last_application_id_chosen = None
 
         layout = FloatLayout()
         root = build()
@@ -105,10 +107,10 @@ class SetPickerRecycleView(Screen):
         param_name_label = Label(
             text=param_name,
             font_size=40,
+            text_size=(dp(350), dp(150)),
             halign="center",
             valign="top",
-            size_hint=(.5, .4),
-            pos_hint={'center_x': .5, 'center_y': .9}
+            pos_hint={'center_x': .5, 'center_y': .65}
 
         )
         layout.add_widget(param_name_label)
@@ -120,7 +122,7 @@ class SetPickerRecycleView(Screen):
             help_param_button = ImageButton(
                 size_hint=(.08, .12),
                 background_color=(1, 1, 1, 1),
-                pos_hint={'center_x': .8, 'center_y': .9},
+                pos_hint={'center_x': .8, 'center_y': .92},
                 image_source=help_button_image
             )
             help_param_button.bind(on_release=lambda x: show_info_popup("Info", param_description))
@@ -135,6 +137,8 @@ class SetPickerRecycleView(Screen):
             pos_hint={'center_x': .5, 'center_y': .6}
         )
         layout.add_widget(param_input)
+        if param_name == "Application id":
+            self.optionally_prefill_last_application_id(param_input)
 
         cancel_button = Button(
             text="Cancel",
@@ -151,12 +155,17 @@ class SetPickerRecycleView(Screen):
             font_size=35,
             pos_hint={'center_x': .7, 'center_y': .2}
         )
-        add_button.bind(on_press=lambda x: self.on_save_param(param_input.text, popup))
+        add_button.bind(on_press=lambda x: self.on_save_param(param_name, param_input.text, popup))
         layout.add_widget(add_button)
 
         popup.open()
 
-    def on_save_param(self, param_input, popup):
+    def on_save_param(self, param_name, param_input, popup):
+        if param_name == "Application id":
+            self.last_application_id_chosen = param_input
         self.params_set.append(param_input)
         popup.dismiss()
         self.check_if_param_needs_to_be_chosen()
+
+    def optionally_prefill_last_application_id(self, param_input):
+        param_input.text = self.last_application_id_chosen if self.last_application_id_chosen is not None else ""

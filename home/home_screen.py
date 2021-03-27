@@ -4,7 +4,7 @@ from kivy.uix.screenmanager import Screen, SlideTransition
 
 from screen_manager.screen_constants import SCRIPT_EDITOR_SCREEN, SCRIPT_LIST_VIEWER_SCREEN
 from script_editor.editor_screen import ScriptEditorScreen
-from script_viewer.script_viewer_list import ScriptViewRecycleView
+from script_viewer.script_list_viewer_screen import ScriptListViewerScreen
 
 
 class HomeScreen(Screen):
@@ -41,6 +41,6 @@ class HomeScreen(Screen):
         self.manager.current = self.manager.next()
 
     def show_stored_scripts(self, *args):
-        self.manager.add_widget(ScriptViewRecycleView(name=SCRIPT_LIST_VIEWER_SCREEN))
+        self.manager.add_widget(ScriptListViewerScreen(name=SCRIPT_LIST_VIEWER_SCREEN))
         self.manager.transition = SlideTransition()
         self.manager.current = self.manager.next()

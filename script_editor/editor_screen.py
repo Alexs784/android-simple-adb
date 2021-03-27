@@ -5,11 +5,12 @@ from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen, SlideTransition
 from kivy.uix.textinput import TextInput
 
-from assets.asset_util import resource_path
+from assets.asset_util import resource_path, image_buttons_width, image_buttons_height, negative_button_background, \
+    positive_button_background, buttons_bottom_alignment_value
 from commands.commands_utils import execute_adb_command_getting_result, execute_command_getting_result
 from devices.device_manager import get_connected_devices
 from popup.confirmation_popup import show_confirmation_popup
-from screen_manager.screen_constants import STEP_PICKER_SCREEN, SCRIPT_LIST_VIEWER_SCREEN
+from screen_manager.screen_constants import STEP_PICKER_SCREEN, SCRIPT_LIST_VIEWER_SCREEN, STEP_VIEWER_SCREEN
 from screen_manager.utils import remove_screen, get_screen_by_name
 from script_editor.editor_recycle_view_item import build, EditorRecycleViewItem
 from step_picker.step_picker_list_screen import StepPickerListScreen
@@ -17,6 +18,7 @@ from storage.database.repository.script_repository import create_script_in_datab
 from storage.database.repository.user_step_repository import get_grouped_user_steps_for_script, \
     get_user_steps_for_script
 from ui.image_button import ImageButton
+from user_step_viewer.user_step_viewer_screen import UserStepViewerScreen
 
 
 class ScriptEditorScreen(Screen):
@@ -33,14 +35,9 @@ class ScriptEditorScreen(Screen):
         layout = FloatLayout()
 
         buttons_right_alignment_value = .85
-        buttons_bottom_alignment_value = .08
         buttons_width = .23
         buttons_height = .13
         buttons_font_size = 45
-        image_buttons_width = .11
-        image_buttons_height = .11
-        positive_button_background = (0.38, 1.70, 0.38, 1)
-        negative_button_background = (2.13, 0.05, 0.05, 1)
 
         self.add_step_button = Button(
             text="Add step",
@@ -146,7 +143,7 @@ class ScriptEditorScreen(Screen):
     def update_user_steps_list(self):
         user_steps_for_script = get_grouped_user_steps_for_script(self.script_id)
         self.update_run_script_button_state(user_steps_for_script)
-        self.user_steps_list.data = [EditorRecycleViewItem().build(root_widget=self, text=item.name, step_id=item.id)
+        self.user_steps_list.data = [EditorRecycleViewItem().build(root_widget=self, text=item.name, user_step_commmand_id=item.command_id)
                                      for item in user_steps_for_script]
 
     def run_script(self, *args):
@@ -218,3 +215,8 @@ class ScriptEditorScreen(Screen):
         update_script_name(self.script_id, script_name)
         popup.dismiss()
         self.go_back(self)
+
+    def on_user_step_click(self, user_step_command_id):
+        self.manager.add_widget(UserStepViewerScreen(name=STEP_VIEWER_SCREEN, user_step_command_id=user_step_command_id))
+        self.manager.transition = SlideTransition()
+        self.manager.current = self.manager.next()

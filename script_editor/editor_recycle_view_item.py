@@ -11,14 +11,18 @@ class EditorRecycleViewItem(Button):
 
     def build(self, **kwargs):
         root_widget = kwargs.get("root_widget")
-        self.user_step_id = kwargs.get("user_step_id")
+        self.user_step_commmand_id = kwargs.get("user_step_commmand_id")
         text = kwargs.get("text")
-        return {"text": text, "font_size": "20sp", 'root_widget': root_widget, 'user_step_id': self.user_step_id}
+        return {
+            "text": text,
+            "font_size": "20sp",
+            'root_widget': root_widget,
+            'user_step_commmand_id': self.user_step_commmand_id
+        }
 
     def on_release(self, **kwargs):
         super().on_release()
-        # TODO: do something on click? Offer remove option?
-        # self.root_widget.on_user_step_click(self.user_step_id)
+        self.root_widget.on_user_step_click(self.user_step_commmand_id)
 
 
 KV = '''

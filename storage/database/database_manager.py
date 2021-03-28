@@ -85,7 +85,7 @@ def get_supported_steps():
         get_step(
             name=COMMAND_INPUT_TEXT_ON_KEYBOARD_NAME,
             commands=[
-                Command(device_serial_number_command() + " shell input text " + PARAMETER_PLACEHOLDER + "1", True)
+                Command(device_serial_number_command() + " shell input text \"" + PARAMETER_PLACEHOLDER + "1\"", True)
             ],
             parameters_names=["Text"],
             parameters_descriptions={"Text": "Text to input on the keyboard (assuming the keyboard is already open)"}

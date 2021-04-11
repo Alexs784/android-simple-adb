@@ -77,7 +77,7 @@ class StepPickerListScreen(Screen):
         param_index = 1
         param_placeholder = PARAMETER_PLACEHOLDER + str(param_index)
         user_steps = []
-        command_id = uuid.uuid4().__repr__()
+        command_id = str(uuid.uuid1())
 
         for command in self.step_chosen.commands:
             command_to_save = command.value.replace(DEVICE_SERIAL_NUMBER_PLACEHOLDER, self.device_id)

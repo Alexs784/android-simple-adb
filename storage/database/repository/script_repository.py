@@ -33,6 +33,7 @@ def update_script_name(script_id, script_name):
 
 def delete_script(script_id):
     session = get_session()
-    session.query(UserScript).filter(UserScript.id == script_id).delete()
+    user_script = session.query(UserScript).filter(UserScript.id == script_id).first()
+    session.delete(user_script)
     session.commit()
     session.close()

@@ -1,3 +1,5 @@
+import uuid
+
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.floatlayout import FloatLayout
@@ -186,8 +188,9 @@ class ScriptEditorScreen(Screen):
             update_script_name(new_script.id, script_name)
         user_steps_for_current_script = get_user_steps_for_script(self.script_id)
         duplicated_user_steps = []
+        command_id = str(uuid.uuid1())
         for step in user_steps_for_current_script:
-            duplicated_step = step.duplicate(new_script.id)
+            duplicated_step = step.duplicate(command_id, new_script.id)
             duplicated_user_steps.append(duplicated_step)
         save_user_steps_in_database(duplicated_user_steps)
         script_viewer_screen = get_screen_by_name(self.manager, SCRIPT_LIST_VIEWER_SCREEN)

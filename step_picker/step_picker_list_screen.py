@@ -1,3 +1,5 @@
+import uuid
+
 from kivy.metrics import dp
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
@@ -75,6 +77,7 @@ class StepPickerListScreen(Screen):
         param_index = 1
         param_placeholder = PARAMETER_PLACEHOLDER + str(param_index)
         user_steps = []
+        command_id = str(uuid.uuid1())
 
         for command in self.step_chosen.commands:
             command_to_save = command.value.replace(DEVICE_SERIAL_NUMBER_PLACEHOLDER, self.device_id)
@@ -85,7 +88,7 @@ class StepPickerListScreen(Screen):
                 param_placeholder = PARAMETER_PLACEHOLDER + str(param_index)
 
             command_to_save = Command(command_to_save, command.is_adb)
-            user_step = get_user_step(self.step_chosen.name, command_to_save, self.script_id)
+            user_step = get_user_step(self.step_chosen.name, command_to_save, command_id, self.script_id)
             user_steps.append(user_step)
 
         save_user_steps_in_database(user_steps)

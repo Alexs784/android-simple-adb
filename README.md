@@ -16,17 +16,20 @@ After that you get to the home screen: here you can both view saved scripts or c
 Opening a script (both creating or opening an existing one) will show the current _steps_ (`adb` commands) added to it and give you a few options:
 - Run the script
 - Save the script (choose a name)
+- Duplicate the script (including its steps)
 - Add steps to the scripts (enabled once you choose a device from the relative menu)
 - Select a device (necessary to add steps, devices shown are the ones **currently** connected to the machine)
 - View and delete a step of the script
 
-<img width="912" alt="Screenshot 2021-03-25 at 20 37 46" src="https://user-images.githubusercontent.com/4242258/112533313-1ae36900-8daa-11eb-9a0b-304064024318.png">
+<img width="912" alt="Screenshot 2021-06-13 at 23 20 07" src="https://user-images.githubusercontent.com/4242258/121822604-3f135f80-cca0-11eb-93af-1aa6e0988599.png">
+
 
 Once you select a device and click on "Add step", you will be able to choose trhe desired step(s):
 <img width="912" alt="Screenshot 2021-03-21 at 21 22 34" src="https://user-images.githubusercontent.com/4242258/111919686-8fa56300-8a8b-11eb-851b-e17b179458fe.png">
 
 Choosing a step may or may not ask extra parameters (depending on if they are required by the step). After choosing the desired one(s) and adding them, going back we will have an overview of what steps we did add
-<img width="912" alt="Screenshot 2021-03-25 at 20 39 19" src="https://user-images.githubusercontent.com/4242258/112533426-38b0ce00-8daa-11eb-9485-42b10ca419f5.png">
+<img width="912" alt="Screenshot 2021-06-13 at 23 31 45" src="https://user-images.githubusercontent.com/4242258/121822619-52bec600-cca0-11eb-9135-92abf258f191.png">
+
 
 From here we can run the script, save it, add more steps and delete current ones. We can also change the target device and add steps relative to that new device.
 
@@ -46,6 +49,7 @@ Clicking on a step added to a script will show the adb commmand that actually th
 - [x] Option to see each step's adb command(s)
 - [x] Option to delete a step from a script
 - [x] Option to delete a script
+- [x] Option to duplicate a script
 - [ ] Option to search adb commands
 - [ ] Support more adb commands
 - [ ] Auto detect Android SDK

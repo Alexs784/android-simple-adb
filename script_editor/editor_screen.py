@@ -1,22 +1,21 @@
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen, SlideTransition
-from kivy.uix.textinput import TextInput
 
 from assets.asset_util import resource_path, image_buttons_width, image_buttons_height, negative_button_background, \
-    positive_button_background, buttons_bottom_alignment_value
+    positive_button_background, buttons_bottom_alignment_value, neutral_button_background
 from commands.commands_utils import execute_adb_command_getting_result, execute_command_getting_result
 from devices.device_manager import get_connected_devices
 from popup.confirmation_popup import show_confirmation_popup
+from popup.input_popup import show_input_popup
 from screen_manager.screen_constants import STEP_PICKER_SCREEN, SCRIPT_LIST_VIEWER_SCREEN, STEP_VIEWER_SCREEN
 from screen_manager.utils import remove_screen, get_screen_by_name
 from script_editor.editor_recycle_view_item import build, EditorRecycleViewItem
 from step_picker.step_picker_list_screen import StepPickerListScreen
 from storage.database.repository.script_repository import create_script_in_database, update_script_name, delete_script
 from storage.database.repository.user_step_repository import get_grouped_user_steps_for_script, \
-    get_user_steps_for_script
+    get_user_steps_for_script, save_user_steps_in_database
 from ui.image_button import ImageButton
 from user_step_viewer.user_step_viewer_screen import UserStepViewerScreen
 
@@ -58,32 +57,38 @@ class ScriptEditorScreen(Screen):
         self.update_add_step_button_state()
         layout.add_widget(self.select_device_button)
 
-        delete_button_image = resource_path('assets/delete_button.png')
         delete_script_button = ImageButton(
             size_hint=(image_buttons_width, image_buttons_height),
             background_color=negative_button_background,
-            pos_hint={'center_x': .68, 'center_y': buttons_bottom_alignment_value},
-            image_source=delete_button_image
+            pos_hint={'center_x': .56, 'center_y': buttons_bottom_alignment_value},
+            image_source=resource_path('assets/delete_button.png')
         )
         delete_script_button.bind(on_release=self.optionally_delete_script)
         layout.add_widget(delete_script_button)
 
-        run_button_image = resource_path('assets/run_button.png')
+        duplicate_script_button = ImageButton(
+            size_hint=(image_buttons_width, image_buttons_height),
+            background_color=neutral_button_background,
+            pos_hint={'center_x': .68, 'center_y': buttons_bottom_alignment_value},
+            image_source=resource_path('assets/duplicate_button.png')
+        )
+        duplicate_script_button.bind(on_release=self.on_duplicate_button_click)
+        layout.add_widget(duplicate_script_button)
+
         self.run_script_button = ImageButton(
             size_hint=(image_buttons_width, image_buttons_height),
             background_color=positive_button_background,
             pos_hint={'center_x': .80, 'center_y': buttons_bottom_alignment_value},
-            image_source=run_button_image
+            image_source=resource_path('assets/run_button.png')
         )
         self.run_script_button.bind(on_release=self.run_script)
         layout.add_widget(self.run_script_button)
 
-        save_button_image = resource_path('assets/save_button.png')
         save_button = ImageButton(
             size_hint=(image_buttons_width, image_buttons_height),
             background_color=positive_button_background,
             pos_hint={'center_x': .92, 'center_y': buttons_bottom_alignment_value},
-            image_source=save_button_image
+            image_source=resource_path('assets/save_button.png')
         )
         save_button.bind(on_release=self.on_save_button_click)
         layout.add_widget(save_button)
@@ -107,7 +112,10 @@ class ScriptEditorScreen(Screen):
         remove_screen(self.manager, self)
 
     def on_save_button_click(self, *args):
-        self.show_save_script_pop_up()
+        show_input_popup(self, "Script name", self.save_script)
+
+    def on_duplicate_button_click(self, *args):
+        show_input_popup(self, "New script name", self.duplicate_script)
 
     def show_steps_list(self, *args):
         self.manager.add_widget(
@@ -172,50 +180,23 @@ class ScriptEditorScreen(Screen):
             script_viewer_screen.update_scripts_list()
         self.go_back()
 
-    def show_save_script_pop_up(self):
-        layout = FloatLayout()
+    def duplicate_script(self, script_name):
+        new_script = create_script_in_database()
+        if script_name:
+            update_script_name(new_script.id, script_name)
+        user_steps_for_current_script = get_user_steps_for_script(self.script_id)
+        duplicated_user_steps = []
+        for step in user_steps_for_current_script:
+            duplicated_step = step.duplicate(new_script.id)
+            duplicated_user_steps.append(duplicated_step)
+        save_user_steps_in_database(duplicated_user_steps)
+        script_viewer_screen = get_screen_by_name(self.manager, SCRIPT_LIST_VIEWER_SCREEN)
+        if script_viewer_screen is not None:
+            script_viewer_screen.update_scripts_list()
+        self.go_back()
 
-        popup = Popup(
-            title='Script name',
-            content=layout,
-            size_hint=(0.5, 0.5),
-            title_align="center",
-            title_size="20sp"
-        )
-
-        script_name_input = TextInput(
-            font_size=40,
-            halign="center",
-            multiline=True,
-            size_hint=(.8, .4),
-            padding=[10, 10, 10, 10],
-            pos_hint={'center_x': .5, 'center_y': .7}
-        )
-        layout.add_widget(script_name_input)
-
-        cancel_button = Button(
-            text="Cancel",
-            size_hint=(.3, .25),
-            font_size=35,
-            pos_hint={'center_x': .3, 'center_y': .2}
-        )
-        cancel_button.bind(on_press=lambda x: popup.dismiss())
-        layout.add_widget(cancel_button)
-
-        save_button = Button(
-            text="Save",
-            size_hint=(.3, .25),
-            font_size=35,
-            pos_hint={'center_x': .7, 'center_y': .2}
-        )
-        save_button.bind(on_press=lambda x: self.save_script(script_name_input.text, popup))
-        layout.add_widget(save_button)
-
-        popup.open()
-
-    def save_script(self, script_name, popup):
+    def save_script(self, script_name):
         update_script_name(self.script_id, script_name)
-        popup.dismiss()
         self.go_back(self)
 
     def on_user_step_click(self, user_step_command_id):

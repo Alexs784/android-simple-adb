@@ -37,13 +37,6 @@ def get_user_steps_for_script(script_id):
     return user_steps
 
 
-def save_user_step_in_database(user_step):
-    session = get_session()
-    session.add(user_step)
-    session.commit()
-    session.close()
-
-
 def save_user_steps_in_database(user_steps):
     session = get_session()
     for user_step in user_steps:

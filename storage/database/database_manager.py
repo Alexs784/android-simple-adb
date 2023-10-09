@@ -4,11 +4,13 @@ from sqlalchemy.orm import sessionmaker
 from commands.name_constants import COMMAND_TAP_ON_VIEW_BY_ID_NAME, COMMAND_SLEEP_NAME, COMMAND_CLEAR_APP_DATA_NAME, \
     COMMAND_LAUNCH_APP_NAME, COMMAND_PRESS_BACK_NAME, COMMAND_INPUT_TEXT_ON_KEYBOARD_NAME, \
     COMMAND_PRESS_ENTER_ON_KEYBOARD_NAME, COMMAND_TAKE_SCREENSHOT_NAME, COMMAND_RESET_PERMISSIONS_NAME, \
-    COMMAND_TAP_ON_COORDINATES_NAME
+    COMMAND_TAP_ON_COORDINATES_NAME, COMMAND_TAP_ON_VIEW_BY_TEXT
 from commands.placeholder_constants import DEVICE_SERIAL_NUMBER_PLACEHOLDER, PARAMETER_PLACEHOLDER
 from storage import Base
 from storage.database.model.command import Command
 from storage.database.model.step import Step, get_step
+
+DEBUG_MODE = False
 
 Session = sessionmaker()
 
@@ -17,19 +19,29 @@ def init_database():
     engine = create_engine("sqlite:///android_automation.db")
     Session.configure(bind=engine)
     Base.metadata.create_all(engine)
+    if DEBUG_MODE:
+        session = get_session()
+        session.query(Step).delete()
+        session.commit()
+        session.close()
+        populate_database()
 
 
 def get_session():
     return Session()
 
 
-@event.listens_for(Step.__table__, 'after_create')
-def populate_database_with_preloaded_data(*args, **kwargs):
+def populate_database():
     print("Populating database after first creation")
     session = get_session()
     session.add_all(get_supported_steps())
     session.commit()
     session.close()
+
+
+@event.listens_for(Step.__table__, 'after_create')
+def populate_database_with_preloaded_data(*args, **kwargs):
+    populate_database()
 
 
 def get_supported_steps():
@@ -125,6 +137,20 @@ def get_supported_steps():
             )],
             parameters_names=["X coordinate", "Y coordinate"],
             parameters_descriptions={}
+        ),
+        get_step(
+            name=COMMAND_TAP_ON_VIEW_BY_TEXT,
+            commands=[
+                Command(device_serial_number_command() + " shell uiautomator dump", True),
+                Command(device_serial_number_command() + " pull /sdcard/window_dump.xml ./", True),
+                Command(
+                    """shell input tap $(perl -ne 'printf "%d %d\n", ($1+$3)/2, ($2+$4)/2 if /text=\""""
+                    + PARAMETER_PLACEHOLDER + """1\" [^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"/' ./window_dump.xml)""",
+                    True
+                )
+            ],
+            parameters_names=["Text"],
+            parameters_descriptions={""}
         )
     ]
 

@@ -1,4 +1,5 @@
 from cx_Freeze import setup, Executable
+import sys
 
 # Dependencies are automatically detected, but it might need
 # fine-tuning.
@@ -9,8 +10,6 @@ build_options = {
 }
 
 include_files = ['assets']
-
-import sys
 
 if sys.platform == 'win32':
     base = 'Win32GUI'

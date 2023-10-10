@@ -1,2 +1,2 @@
-kivy~=2.0.0
-SQLAlchemy~=1.3.22
+kivy==2.2.1
+SQLAlchemy==2.0.21

@@ -9,7 +9,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.textinput import TextInput
 
 from assets.asset_util import resource_path
-from commands.placeholder_constants import PARAMETER_PLACEHOLDER, DEVICE_SERIAL_NUMBER_PLACEHOLDER
+from comands.placeholder_constants import PARAMETER_PLACEHOLDER, DEVICE_SERIAL_NUMBER_PLACEHOLDER
 from popup.info_popup import show_info_popup
 from screen_manager.screen_constants import SCRIPT_EDITOR_SCREEN
 from screen_manager.utils import remove_screen, get_screen_by_name

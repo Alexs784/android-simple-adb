@@ -1,11 +1,11 @@
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
 
-from commands.name_constants import COMMAND_TAP_ON_VIEW_BY_ID_NAME, COMMAND_SLEEP_NAME, COMMAND_CLEAR_APP_DATA_NAME, \
+from comands.name_constants import COMMAND_TAP_ON_VIEW_BY_ID_NAME, COMMAND_SLEEP_NAME, COMMAND_CLEAR_APP_DATA_NAME, \
     COMMAND_LAUNCH_APP_NAME, COMMAND_PRESS_BACK_NAME, COMMAND_INPUT_TEXT_ON_KEYBOARD_NAME, \
     COMMAND_PRESS_ENTER_ON_KEYBOARD_NAME, COMMAND_TAKE_SCREENSHOT_NAME, COMMAND_RESET_PERMISSIONS_NAME, \
     COMMAND_TAP_ON_COORDINATES_NAME, COMMAND_TAP_ON_VIEW_BY_TEXT
-from commands.placeholder_constants import DEVICE_SERIAL_NUMBER_PLACEHOLDER, PARAMETER_PLACEHOLDER
+from comands.placeholder_constants import DEVICE_SERIAL_NUMBER_PLACEHOLDER, PARAMETER_PLACEHOLDER
 from storage import Base
 from storage.database.model.command import Command
 from storage.database.model.step import Step, get_step

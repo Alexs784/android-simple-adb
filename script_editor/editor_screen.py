@@ -7,7 +7,7 @@ from kivy.uix.screenmanager import Screen, SlideTransition
 
 from assets.asset_util import resource_path, image_buttons_width, image_buttons_height, negative_button_background, \
     positive_button_background, buttons_bottom_alignment_value, neutral_button_background
-from commands.commands_utils import execute_adb_command_getting_result, execute_command_getting_result
+from comands.commands_utils import execute_adb_command_getting_result, execute_command_getting_result
 from devices.device_manager import get_connected_devices
 from popup.confirmation_popup import show_confirmation_popup
 from popup.input_popup import show_input_popup

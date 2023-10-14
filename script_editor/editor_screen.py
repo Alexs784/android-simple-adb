@@ -199,8 +199,8 @@ class ScriptEditorScreen(Screen):
             update_script_name(new_script.id, script_name)
         user_steps_for_current_script = get_user_steps_for_script(self.script_id)
         duplicated_user_steps = []
-        command_id = str(uuid.uuid1())
         for step in user_steps_for_current_script:
+            command_id = str(uuid.uuid1())
             duplicated_step = step.duplicate(command_id, new_script.id)
             duplicated_user_steps.append(duplicated_step)
         save_user_steps_in_database(duplicated_user_steps)

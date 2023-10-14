@@ -1,3 +1,4 @@
+import time
 import uuid
 
 from kivy.uix.button import Button
@@ -161,12 +162,22 @@ class ScriptEditorScreen(Screen):
     def run_script(self, *args):
         user_steps_for_script = get_user_steps_for_script(self.script_id)
         for user_step in user_steps_for_script:
-            if user_step.command.is_adb:
-                result = execute_adb_command_getting_result(user_step.command.value)
-            else:
-                result = execute_command_getting_result(user_step.command.value)
+            retry_count = 0
+            result = self.execute_user_step(user_step)
 
-            print(result)
+            while result is not None and retry_count < 2:
+                print("Retrying command")
+                time.sleep(2)
+                retry_count += 1
+                self.execute_user_step(user_step)
+
+    def execute_user_step(self, user_step):
+        if user_step.command.is_adb:
+            result = execute_adb_command_getting_result(user_step.command.value)
+        else:
+            result = execute_command_getting_result(user_step.command.value)
+        print(result)
+        return result
 
     def optionally_delete_script(self, *args):
         show_confirmation_popup(

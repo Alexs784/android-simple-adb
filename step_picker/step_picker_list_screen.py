@@ -9,7 +9,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.textinput import TextInput
 
 from assets.asset_util import resource_path
-from comands.placeholder_constants import PARAMETER_PLACEHOLDER, DEVICE_SERIAL_NUMBER_PLACEHOLDER
+from comands.placeholder_constants import PARAMETER_PLACEHOLDER
 from popup.info_popup import show_info_popup
 from screen_manager.screen_constants import SCRIPT_EDITOR_SCREEN
 from screen_manager.utils import remove_screen, get_screen_by_name
@@ -22,11 +22,10 @@ from ui.image_button import ImageButton
 
 
 class StepPickerListScreen(Screen):
-    def __init__(self, script_id, device_id, **kwargs):
+    def __init__(self, script_id, **kwargs):
         super(StepPickerListScreen, self).__init__(**kwargs)
 
         self.script_id = script_id
-        self.device_id = device_id
         self.params_names = None
         self.params_descriptions = None
         self.params_set = []
@@ -80,7 +79,7 @@ class StepPickerListScreen(Screen):
         command_id = str(uuid.uuid1())
 
         for command in self.step_chosen.commands:
-            command_to_save = command.value.replace(DEVICE_SERIAL_NUMBER_PLACEHOLDER, self.device_id)
+            command_to_save = command.value
             while param_placeholder in command_to_save:
                 param_to_set = self.params_set.pop(0)
                 command_to_save = command_to_save.replace(param_placeholder, param_to_set)

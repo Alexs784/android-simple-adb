@@ -3,8 +3,8 @@ import subprocess
 from sdk_setter.utils import get_adb
 
 
-def execute_adb_command_getting_result(adb_command):
-    command_to_execute = get_adb() + " " + adb_command
+def execute_adb_command_getting_result(adb_command, device_id):
+    command_to_execute = f"{get_adb()} -s {device_id} {adb_command}"
     execute_command_getting_result(command_to_execute)
 
 

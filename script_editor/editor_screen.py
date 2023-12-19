@@ -121,8 +121,7 @@ class ScriptEditorScreen(Screen):
         show_input_popup(self, "New script name", self.duplicate_script)
 
     def show_steps_list(self, *args):
-        self.manager.add_widget(
-            StepPickerListScreen(name=STEP_PICKER_SCREEN, script_id=self.script_id, device_id=self.selected_device_id))
+        self.manager.add_widget(StepPickerListScreen(name=STEP_PICKER_SCREEN, script_id=self.script_id))
         self.manager.transition = SlideTransition()
         self.manager.current = self.manager.next()
 
@@ -132,7 +131,7 @@ class ScriptEditorScreen(Screen):
         for device_id, device_name in get_connected_devices().items():
             device = (device_id, device_name)
             device_button = Button(text=device_name, size_hint_y=None, height=80)
-            device_button.bind(on_release=lambda button: dropdown_view.select(device))
+            device_button.bind(on_release=lambda button, selected_device=device: dropdown_view.select(selected_device))
             dropdown_view.add_widget(device_button)
 
         dropdown_view.bind(on_select=lambda instance, device_data: self.on_device_selected(device_data))
@@ -173,7 +172,7 @@ class ScriptEditorScreen(Screen):
 
     def execute_user_step(self, user_step):
         if user_step.command.is_adb:
-            result = execute_adb_command_getting_result(user_step.command.value)
+            result = execute_adb_command_getting_result(user_step.command.value, self.selected_device_id)
         else:
             result = execute_command_getting_result(user_step.command.value)
         print(result)

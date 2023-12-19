@@ -140,3 +140,7 @@ cython_debug/
 
 # intelliJ
 .idea/
+.DS_Store
+window_dump.xml
+settings.db
+android_automation.db

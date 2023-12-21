@@ -9,5 +9,5 @@ def execute_adb_command_getting_result(adb_command, device_id):
 
 
 def execute_command_getting_result(command):
-    print("Command to execute:\n{}".format(command))
+    print(f"Command to execute:\n{command}")
     return subprocess.run(command, stdout=subprocess.PIPE, text=True, shell=True)

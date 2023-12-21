@@ -164,7 +164,7 @@ class ScriptEditorScreen(Screen):
             retry_count = 0
             result = self.execute_user_step(user_step)
 
-            while result is not None and retry_count < 2:
+            while result is not None and result.returncode != 0 and retry_count < 2:
                 print("Retrying command")
                 time.sleep(2)
                 retry_count += 1

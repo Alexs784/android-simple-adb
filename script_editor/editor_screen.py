@@ -1,6 +1,7 @@
 import time
 import uuid
 
+from kivy.metrics import dp
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.floatlayout import FloatLayout
@@ -14,11 +15,11 @@ from popup.confirmation_popup import show_confirmation_popup
 from popup.input_popup import show_input_popup
 from screen_manager.screen_constants import STEP_PICKER_SCREEN, SCRIPT_LIST_VIEWER_SCREEN, STEP_VIEWER_SCREEN
 from screen_manager.utils import remove_screen, get_screen_by_name
-from script_editor.editor_recycle_view_item import build, EditorRecycleViewItem
+from script_editor.editor_recycle_view_item import build, EditorRecycleViewItem, ITEM_HEIGHT_DP
 from step_picker.step_picker_list_screen import StepPickerListScreen
 from storage.database.repository.script_repository import create_script_in_database, update_script_name, delete_script
 from storage.database.repository.user_step_repository import get_grouped_user_steps_for_script, \
-    get_user_steps_for_script, save_user_steps_in_database
+    get_user_steps_for_script, save_user_steps_in_database, update_user_step_position
 from ui.image_button import ImageButton
 from user_step_viewer.user_step_viewer_screen import UserStepViewerScreen
 
@@ -27,6 +28,7 @@ class ScriptEditorScreen(Screen):
     def __init__(self, script_id=None, **kwargs):
         super(ScriptEditorScreen, self).__init__(**kwargs)
         self.script_id = script_id
+        self.user_steps_list_size = 0
 
         if script_id is None:
             created_script = create_script_in_database()
@@ -111,6 +113,15 @@ class ScriptEditorScreen(Screen):
 
         self.add_widget(layout)
 
+    def notify_drop_position(self, user_step_id, new_position):
+        # Implement the logic to handle the drop
+        item_height = int(ITEM_HEIGHT_DP)
+        x_position, y_position = new_position
+        new_index = int(y_position / item_height)
+        reversed_index = (self.user_steps_list_size - 1) - new_index
+        update_user_step_position(user_step_id, reversed_index)
+        self.update_user_steps_list()
+
     def go_back(self, *args):
         remove_screen(self.manager, self)
 
@@ -152,9 +163,11 @@ class ScriptEditorScreen(Screen):
 
     def update_user_steps_list(self):
         user_steps_for_script = get_grouped_user_steps_for_script(self.script_id)
+        self.user_steps_list_size = len(user_steps_for_script)
         self.update_run_script_button_state(user_steps_for_script)
         self.user_steps_list.data = [
-            EditorRecycleViewItem().build(root_widget=self, text=item.name, user_step_commmand_id=item.command_id)
+            EditorRecycleViewItem().build(root_widget=self, text=item.name, user_step_id=item.id,
+                                          user_step_command_id=item.command_id)
             for item in user_steps_for_script
         ]
 

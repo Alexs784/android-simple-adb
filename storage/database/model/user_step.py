@@ -9,6 +9,7 @@ class UserStep(Base):
     name = Column(String)
     command = Column(PickleType)
     command_id = Column(String)
+    position = Column(Integer, default=0)
     script_id = Column(Integer, ForeignKey('user_scripts.id'))
     time_created = Column(DateTime(timezone=True), default=func.now())
 

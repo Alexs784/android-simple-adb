@@ -125,7 +125,7 @@ def get_supported_steps():
         ),
         get_step(
             name=COMMAND_TAP_ON_COORDINATES_NAME,
-            commands=[Command("shell input tap " + PARAMETER_PLACEHOLDER + "1 " + PARAMETER_PLACEHOLDER + "2",True)],
+            commands=[Command("shell input tap " + PARAMETER_PLACEHOLDER + "1 " + PARAMETER_PLACEHOLDER + "2", True)],
             parameters_names=["X coordinate", "Y coordinate"],
             parameters_descriptions={}
         ),

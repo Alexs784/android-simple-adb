@@ -23,10 +23,11 @@ from storage.database.repository.user_step_repository import get_grouped_user_st
 from ui.image_button import ImageButton
 
 NEW_SCRIPT = -1
+NO_OPERATION = -2
 
 
 class ScriptEditorScreen(Screen):
-    script_id = NumericProperty(NEW_SCRIPT)
+    script_id = NumericProperty(NO_OPERATION)
     user_steps_list_size = NumericProperty(0)
 
     def __init__(self, **kwargs):
@@ -107,7 +108,6 @@ class ScriptEditorScreen(Screen):
         layout.add_widget(back_button)
 
         self.user_steps_list = build()
-        # self.update_user_steps_list()
         layout.add_widget(self.user_steps_list)
 
         self.add_widget(layout)

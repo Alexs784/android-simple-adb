@@ -4,7 +4,8 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen
 from screen_manager.screen_constants import SCRIPT_EDITOR_SCREEN, SCRIPT_LIST_VIEWER_SCREEN
 from screen_manager.screen_titles import SCREEN_DEFAULT_NAME
-from screen_manager.utils import navigate_to_screen
+from screen_manager.utils import navigate_to_screen, get_screen_by_name
+from script_editor.editor_screen import NEW_SCRIPT
 
 
 class HomeScreen(Screen):
@@ -39,6 +40,8 @@ class HomeScreen(Screen):
         App.get_running_app().title = SCREEN_DEFAULT_NAME
 
     def show_script_editor(self, *args):
+        script_editor_screen = get_screen_by_name(self.manager, SCRIPT_EDITOR_SCREEN)
+        script_editor_screen.script_id = NEW_SCRIPT
         navigate_to_screen(self.manager, SCRIPT_EDITOR_SCREEN)
 
     def show_stored_scripts(self, *args):

@@ -90,7 +90,7 @@ class EditorRecycleViewItem(DragBehavior, Button):
             else:
                 # Calculate the new position based on the touch up position
                 new_position = self.parent.to_local(*touch.pos)
-                self.root_widget.notify_drop_position(self.user_step_id, new_position)
+                self.root_widget.on_item_drop(self.user_step_id, new_position)
                 self.on_drag_finish(new_position)
             return True
         return super(EditorRecycleViewItem, self).on_touch_up(touch)

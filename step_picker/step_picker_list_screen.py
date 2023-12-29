@@ -1,6 +1,7 @@
 import uuid
 
 from kivy.metrics import dp
+from kivy.properties import StringProperty, NumericProperty
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
@@ -12,7 +13,7 @@ from assets.asset_util import resource_path
 from comands.placeholder_constants import PARAMETER_PLACEHOLDER
 from popup.info_popup import show_info_popup
 from screen_manager.screen_constants import SCRIPT_EDITOR_SCREEN
-from screen_manager.utils import remove_screen, get_screen_by_name
+from screen_manager.utils import get_screen_by_name, go_back
 from step_picker.step_recycle_view_item import build, StepRecycleViewItem
 from storage.database.model.command import Command
 from storage.database.model.user_step import get_user_step
@@ -22,10 +23,12 @@ from ui.image_button import ImageButton
 
 
 class StepPickerListScreen(Screen):
-    def __init__(self, script_id, **kwargs):
+    script_id = NumericProperty(-1)
+    steps_list = None
+
+    def __init__(self, **kwargs):
         super(StepPickerListScreen, self).__init__(**kwargs)
 
-        self.script_id = script_id
         self.params_names = None
         self.params_descriptions = None
         self.params_set = []
@@ -33,11 +36,9 @@ class StepPickerListScreen(Screen):
         self.last_application_id_chosen = None
 
         layout = FloatLayout()
-        root = build()
-        root.data = [StepRecycleViewItem().build(root_widget=self, text=item.name, step_id=item.id)
-                     for item in get_steps()]
+        self.steps_list = build()
 
-        layout.add_widget(root)
+        layout.add_widget(self.steps_list)
 
         back_button_image = resource_path('assets/back_button.png')
         back_button = ImageButton(
@@ -52,11 +53,15 @@ class StepPickerListScreen(Screen):
 
         self.add_widget(layout)
 
+    def on_enter(self, *args):
+        self.steps_list.data = [StepRecycleViewItem().build(root_widget=self, text=item.name, step_id=item.id)
+                                for item in get_steps()]
+
     def go_back(self, *args):
         editor_screen = get_screen_by_name(self.manager, SCRIPT_EDITOR_SCREEN)
         if editor_screen is not None:
             editor_screen.update_user_steps_list()
-        remove_screen(self.manager, self)
+        go_back(self.manager)
 
     def on_step_chosen(self, step_id):
         self.step_chosen = get_step_by_id(step_id)

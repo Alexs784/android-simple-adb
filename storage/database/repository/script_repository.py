@@ -19,6 +19,7 @@ def create_script_in_database():
     session.add(script)
     session.commit()
     session.refresh(script)
+    print(f"Created script {script.name} with id {script.id}")
     session.close()
     return script
 
@@ -33,7 +34,14 @@ def update_script_name(script_id, script_name):
 
 def delete_script(script_id):
     session = get_session()
-    user_script = session.query(UserScript).filter(UserScript.id == script_id).first()
-    session.delete(user_script)
+    script = session.query(UserScript).filter(UserScript.id == script_id).one()
+    session.delete(script)
     session.commit()
     session.close()
+
+
+def fetch_script(script_id):
+    session = get_session()
+    user_script = session.query(UserScript).filter(UserScript.id == script_id).first()
+    session.close()
+    return user_script

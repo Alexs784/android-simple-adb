@@ -1,0 +1,2 @@
+SCREEN_DEFAULT_NAME = "Simple ADB"
+ADD_STEP = "Add step"

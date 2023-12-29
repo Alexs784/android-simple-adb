@@ -1,10 +1,9 @@
 from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.screenmanager import Screen, SlideTransition
+from kivy.uix.screenmanager import Screen
 
 from assets.asset_util import resource_path
 from screen_manager.screen_constants import SCRIPT_EDITOR_SCREEN
-from screen_manager.utils import remove_screen
-from script_editor.editor_screen import ScriptEditorScreen
+from screen_manager.utils import navigate_to_screen, go_back
 from script_viewer.script_recycle_view_item import build, ScriptRecycleViewItem
 from storage.database.repository.script_repository import get_scripts
 from ui.image_button import ImageButton
@@ -16,7 +15,6 @@ class ScriptListViewerScreen(Screen):
 
         layout = FloatLayout()
         self.root = build()
-        self.update_scripts_list()
 
         layout.add_widget(self.root)
 
@@ -32,13 +30,16 @@ class ScriptListViewerScreen(Screen):
 
         self.add_widget(layout)
 
+    def on_enter(self, *args):
+        self.update_scripts_list()
+
     def go_back(self, *args):
-        remove_screen(self.manager, self)
+        go_back(self.manager)
 
     def on_script_chosen(self, script_id):
-        self.manager.add_widget(ScriptEditorScreen(name=SCRIPT_EDITOR_SCREEN, script_id=script_id))
-        self.manager.transition = SlideTransition()
-        self.manager.current = self.manager.next()
+        script_editor_screen = self.manager.get_screen(SCRIPT_EDITOR_SCREEN)
+        script_editor_screen.script_id = script_id
+        navigate_to_screen(self.manager, SCRIPT_EDITOR_SCREEN)
 
     def update_scripts_list(self):
         self.root.data = self.load_stored_scripts()

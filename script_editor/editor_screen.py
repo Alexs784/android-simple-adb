@@ -1,11 +1,12 @@
 import time
 import uuid
 
+from kivy.app import App
+from kivy.properties import NumericProperty
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.screenmanager import Screen, SlideTransition
-
+from kivy.uix.screenmanager import Screen
 from assets.asset_util import resource_path, image_buttons_width, image_buttons_height, negative_button_background, \
     positive_button_background, buttons_bottom_alignment_value, neutral_button_background
 from comands.commands_utils import execute_adb_command_getting_result, execute_command_getting_result
@@ -13,27 +14,27 @@ from devices.device_manager import get_connected_devices
 from popup.confirmation_popup import show_confirmation_popup
 from popup.input_popup import show_input_popup
 from screen_manager.screen_constants import STEP_PICKER_SCREEN, SCRIPT_LIST_VIEWER_SCREEN, STEP_VIEWER_SCREEN
-from screen_manager.utils import remove_screen, get_screen_by_name
+from screen_manager.utils import get_screen_by_name, navigate_to_screen, go_back
 from script_editor.editor_recycle_view_item import build, EditorRecycleViewItem, ITEM_HEIGHT_DP
-from step_picker.step_picker_list_screen import StepPickerListScreen
-from storage.database.repository.script_repository import create_script_in_database, update_script_name, delete_script
+from storage.database.repository.script_repository import create_script_in_database, update_script_name, delete_script, \
+    fetch_script
 from storage.database.repository.user_step_repository import get_grouped_user_steps_for_script, \
     get_user_steps_for_script, save_user_steps_in_database, update_user_step_position
 from ui.image_button import ImageButton
-from user_step_viewer.user_step_viewer_screen import UserStepViewerScreen
+
+NEW_SCRIPT = -1
 
 
 class ScriptEditorScreen(Screen):
-    def __init__(self, script_id=None, **kwargs):
-        super(ScriptEditorScreen, self).__init__(**kwargs)
-        self.script_id = script_id
-        self.user_steps_list_size = 0
+    script_id = NumericProperty(NEW_SCRIPT)
+    user_steps_list_size = NumericProperty(0)
 
-        if script_id is None:
-            created_script = create_script_in_database()
-            self.script_id = created_script.id
+    def __init__(self, **kwargs):
+        super(ScriptEditorScreen, self).__init__(**kwargs)
 
         self.selected_device_id = None
+
+        self.bind(script_id=self.on_data_load)
 
         layout = FloatLayout()
 
@@ -106,13 +107,22 @@ class ScriptEditorScreen(Screen):
         layout.add_widget(back_button)
 
         self.user_steps_list = build()
-        self.update_user_steps_list()
+        # self.update_user_steps_list()
         layout.add_widget(self.user_steps_list)
 
         self.add_widget(layout)
 
-    def notify_drop_position(self, user_step_id, new_position):
-        # Implement the logic to handle the drop
+    def on_enter(self, *args):
+        self.on_data_load()
+
+    def on_data_load(self, *args):
+        if self.script_id == NEW_SCRIPT:
+            created_script = create_script_in_database()
+            self.script_id = created_script.id
+
+        self.update_user_steps_list()
+
+    def on_item_drop(self, user_step_id, new_position):
         item_height = int(ITEM_HEIGHT_DP)
         x_position, y_position = new_position
         new_index = int(y_position / item_height)
@@ -121,7 +131,7 @@ class ScriptEditorScreen(Screen):
         self.update_user_steps_list()
 
     def go_back(self, *args):
-        remove_screen(self.manager, self)
+        go_back(self.manager)
 
     def on_save_button_click(self, *args):
         show_input_popup(self, "Script name", self.save_script)
@@ -130,9 +140,9 @@ class ScriptEditorScreen(Screen):
         show_input_popup(self, "New script name", self.duplicate_script)
 
     def show_steps_list(self, *args):
-        self.manager.add_widget(StepPickerListScreen(name=STEP_PICKER_SCREEN, script_id=self.script_id))
-        self.manager.transition = SlideTransition()
-        self.manager.current = self.manager.next()
+        step_picker_screen = self.manager.get_screen(STEP_PICKER_SCREEN)
+        step_picker_screen.script_id = self.script_id
+        navigate_to_screen(self.manager, STEP_PICKER_SCREEN)
 
     def show_connected_devices(self, *args):
         dropdown_view = DropDown()
@@ -156,14 +166,17 @@ class ScriptEditorScreen(Screen):
         self.run_script_button.set_disabled(self.selected_device_id is None)
 
     def update_user_steps_list(self):
-        user_steps_for_script = get_grouped_user_steps_for_script(self.script_id)
-        self.user_steps_list_size = len(user_steps_for_script)
-        self.update_run_script_button_state()
-        self.user_steps_list.data = [
-            EditorRecycleViewItem().build(root_widget=self, text=item.name, user_step_id=item.id,
-                                          user_step_command_id=item.command_id)
-            for item in user_steps_for_script
-        ]
+        script = fetch_script(self.script_id)
+        if script is not None:
+            App.get_running_app().title = script.name
+            user_steps_for_script = get_grouped_user_steps_for_script(self.script_id)
+            self.user_steps_list_size = len(user_steps_for_script)
+            self.update_run_script_button_state()
+            self.user_steps_list.data = [
+                EditorRecycleViewItem().build(root_widget=self, text=item.name, user_step_id=item.id,
+                                              user_step_command_id=item.command_id)
+                for item in user_steps_for_script
+            ]
 
     def run_script(self, *args):
         user_steps_for_script = get_user_steps_for_script(self.script_id)
@@ -220,7 +233,6 @@ class ScriptEditorScreen(Screen):
         self.go_back(self)
 
     def on_user_step_click(self, user_step_command_id):
-        self.manager.add_widget(
-            UserStepViewerScreen(name=STEP_VIEWER_SCREEN, user_step_command_id=user_step_command_id))
-        self.manager.transition = SlideTransition()
-        self.manager.current = self.manager.next()
+        step_viewer_screen = self.manager.get_screen(STEP_VIEWER_SCREEN)
+        step_viewer_screen.user_step_command_id = user_step_command_id
+        navigate_to_screen(self.manager, STEP_VIEWER_SCREEN)

@@ -4,7 +4,8 @@ from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen
 from kivy.uix.textinput import TextInput
 
-from home.home_screen import HomeScreen
+from screen_manager.screen_constants import HOME_SCREEN
+from screen_manager.utils import navigate_to_screen
 from sdk_setter.utils import store_sdk_directory as store_sdk
 from sdk_setter.utils import get_stored_sdk_directory
 
@@ -48,5 +49,5 @@ class SdkScreen(Screen):
     def store_sdk_directory(self, *args):
         stored_successfully = store_sdk(self.sdk_location_text_input.text)
         if stored_successfully:
-            self.manager.add_widget(HomeScreen(name="Home"))
-            self.manager.current = self.manager.next()
+            navigate_to_screen(self.manager, HOME_SCREEN)
+            # self.manager.current = HOME_SCREEN

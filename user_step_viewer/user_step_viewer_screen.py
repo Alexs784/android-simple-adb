@@ -1,4 +1,5 @@
 from kivy.metrics import dp
+from kivy.properties import StringProperty
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen
 
@@ -6,35 +7,32 @@ from assets.asset_util import resource_path, negative_button_background, image_b
     buttons_bottom_alignment_value
 from popup.confirmation_popup import show_confirmation_popup
 from screen_manager.screen_constants import SCRIPT_EDITOR_SCREEN
-from screen_manager.utils import remove_screen, get_screen_by_name
+from screen_manager.utils import get_screen_by_name, go_back
 from storage.database.repository.user_step_repository import delete_user_steps, get_user_steps
 from ui.image_button import ImageButton
 from kivy.uix.label import Label
 
 
 class UserStepViewerScreen(Screen):
-    def __init__(self, user_step_command_id, **kwargs):
+    user_step_command_id = StringProperty('')
+    steps_text = StringProperty('')
+
+    def __init__(self, **kwargs):
         super(UserStepViewerScreen, self).__init__(**kwargs)
-        self.user_step_command_id = user_step_command_id
 
         layout = FloatLayout()
 
-        steps_text = ""
-        steps = get_user_steps(self.user_step_command_id)
-        for step in steps:
-            if step.command.is_adb:
-                steps_text += "adb "
-            steps_text += step.command.value + "\n\n"
+        self.bind(user_step_command_id=self.on_load_step_data)
 
-        steps_label = Label(
-            text=steps_text,
+        self.steps_label = Label(
+            text=self.steps_text,
             font_size=40,
             halign="left",
             valign="top",
             text_size=(dp(750), dp(350)),
             pos_hint={'center_x': .5, 'center_y': .7}
         )
-        layout.add_widget(steps_label)
+        layout.add_widget(self.steps_label)
 
         back_button_image = resource_path('assets/back_button.png')
         back_button = ImageButton(
@@ -57,8 +55,17 @@ class UserStepViewerScreen(Screen):
 
         self.add_widget(layout)
 
+    def on_load_step_data(self, *args):
+        steps = get_user_steps(self.user_step_command_id)
+        for step in steps:
+            if step.command.is_adb:
+                self.steps_text += "adb "
+            self.steps_text += step.command.value + "\n\n"
+
+        self.steps_label.text = self.steps_text
+
     def go_back(self, *args):
-        remove_screen(self.manager, self)
+        go_back(self.manager)
 
     def optionally_delete_user_step(self, *args):
         show_confirmation_popup(

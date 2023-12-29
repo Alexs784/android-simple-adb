@@ -22,7 +22,7 @@ executables = [
 
 setup(
     name='SimpleAdb',
-    version='0.0.6',
+    version='0.0.7',
     description='',
     options={
         'build_exe': build_options,

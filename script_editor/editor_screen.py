@@ -1,7 +1,6 @@
 import time
 import uuid
 
-from kivy.metrics import dp
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.floatlayout import FloatLayout
@@ -59,7 +58,6 @@ class ScriptEditorScreen(Screen):
             pos_hint={'center_x': buttons_right_alignment_value, 'center_y': .75}
         )
         self.select_device_button.bind(on_release=self.show_connected_devices)
-        self.update_add_step_button_state()
         layout.add_widget(self.select_device_button)
 
         delete_script_button = ImageButton(
@@ -152,19 +150,15 @@ class ScriptEditorScreen(Screen):
     def on_device_selected(self, *args):
         self.select_device_button.text = args[0][1]
         self.selected_device_id = args[0][0]
-        self.update_add_step_button_state()
+        self.update_run_script_button_state()
 
-    def update_add_step_button_state(self):
-        self.add_step_button.set_disabled(self.selected_device_id is None)
-
-    def update_run_script_button_state(self, user_steps_for_script):
-        disable = len(user_steps_for_script) == 0
-        self.run_script_button.set_disabled(disable)
+    def update_run_script_button_state(self):
+        self.run_script_button.set_disabled(self.selected_device_id is None)
 
     def update_user_steps_list(self):
         user_steps_for_script = get_grouped_user_steps_for_script(self.script_id)
         self.user_steps_list_size = len(user_steps_for_script)
-        self.update_run_script_button_state(user_steps_for_script)
+        self.update_run_script_button_state()
         self.user_steps_list.data = [
             EditorRecycleViewItem().build(root_widget=self, text=item.name, user_step_id=item.id,
                                           user_step_command_id=item.command_id)

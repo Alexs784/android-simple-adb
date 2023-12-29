@@ -1,8 +1,10 @@
+from kivy.app import App
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen
 
 from assets.asset_util import resource_path
 from screen_manager.screen_constants import SCRIPT_EDITOR_SCREEN
+from screen_manager.screen_titles import SCRIPTS_LIST
 from screen_manager.utils import navigate_to_screen, go_back
 from script_viewer.script_recycle_view_item import build, ScriptRecycleViewItem
 from storage.database.repository.script_repository import get_scripts
@@ -30,8 +32,9 @@ class ScriptListViewerScreen(Screen):
 
         self.add_widget(layout)
 
-    def on_enter(self, *args):
+    def on_pre_enter(self, *args):
         self.update_scripts_list()
+        App.get_running_app().title = SCRIPTS_LIST
 
     def go_back(self, *args):
         go_back(self.manager)

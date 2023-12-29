@@ -1,7 +1,9 @@
+from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen
 from screen_manager.screen_constants import SCRIPT_EDITOR_SCREEN, SCRIPT_LIST_VIEWER_SCREEN
+from screen_manager.screen_titles import SCREEN_DEFAULT_NAME
 from screen_manager.utils import navigate_to_screen
 
 
@@ -32,6 +34,9 @@ class HomeScreen(Screen):
         layout.add_widget(saved_scripts_button)
 
         self.add_widget(layout)
+
+    def on_pre_enter(self, *args):
+        App.get_running_app().title = SCREEN_DEFAULT_NAME
 
     def show_script_editor(self, *args):
         navigate_to_screen(self.manager, SCRIPT_EDITOR_SCREEN)

@@ -50,4 +50,3 @@ class SdkScreen(Screen):
         stored_successfully = store_sdk(self.sdk_location_text_input.text)
         if stored_successfully:
             navigate_to_screen(self.manager, HOME_SCREEN)
-            # self.manager.current = HOME_SCREEN

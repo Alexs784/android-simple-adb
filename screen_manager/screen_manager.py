@@ -4,6 +4,7 @@ from kivy.uix.screenmanager import ScreenManager, SlideTransition
 from home.home_screen import HomeScreen
 from screen_manager.screen_constants import SDK_SCREEN, HOME_SCREEN, SCRIPT_LIST_VIEWER_SCREEN, SCRIPT_EDITOR_SCREEN, \
     STEP_PICKER_SCREEN, STEP_VIEWER_SCREEN
+from screen_manager.screen_titles import SCREEN_DEFAULT_NAME
 from screen_manager.utils import navigate_to_screen
 from script_editor.editor_screen import ScriptEditorScreen
 from script_viewer.script_list_viewer_screen import ScriptListViewerScreen
@@ -21,6 +22,8 @@ def should_ask_for_android_sdk_location():
 class ScreenManagerApp(App):
 
     def build(self):
+        self.title = SCREEN_DEFAULT_NAME
+
         screen_manager = ScreenManager()
         screen_manager.add_widget(HomeScreen(name=HOME_SCREEN))
         screen_manager.add_widget(ScriptListViewerScreen(name=SCRIPT_LIST_VIEWER_SCREEN))
@@ -35,7 +38,5 @@ class ScreenManagerApp(App):
             navigate_to_screen(screen_manager, HOME_SCREEN)
 
         screen_manager.transition = SlideTransition()
-
-        self.title = "Android automation"
 
         return screen_manager

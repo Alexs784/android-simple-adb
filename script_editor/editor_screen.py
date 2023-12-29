@@ -112,7 +112,7 @@ class ScriptEditorScreen(Screen):
 
         self.add_widget(layout)
 
-    def on_enter(self, *args):
+    def on_pre_enter(self, *args):
         self.on_data_load()
 
     def on_data_load(self, *args):

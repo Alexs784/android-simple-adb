@@ -1,5 +1,6 @@
 import uuid
 
+from kivy.app import App
 from kivy.metrics import dp
 from kivy.properties import StringProperty, NumericProperty
 from kivy.uix.button import Button
@@ -13,6 +14,7 @@ from assets.asset_util import resource_path
 from comands.placeholder_constants import PARAMETER_PLACEHOLDER
 from popup.info_popup import show_info_popup
 from screen_manager.screen_constants import SCRIPT_EDITOR_SCREEN
+from screen_manager.screen_titles import ADD_STEP
 from screen_manager.utils import get_screen_by_name, go_back
 from step_picker.step_recycle_view_item import build, StepRecycleViewItem
 from storage.database.model.command import Command
@@ -53,7 +55,8 @@ class StepPickerListScreen(Screen):
 
         self.add_widget(layout)
 
-    def on_enter(self, *args):
+    def on_pre_enter(self, *args):
+        App.get_running_app().title = ADD_STEP
         self.steps_list.data = [StepRecycleViewItem().build(root_widget=self, text=item.name, step_id=item.id)
                                 for item in get_steps()]
 

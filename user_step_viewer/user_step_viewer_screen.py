@@ -56,6 +56,7 @@ class UserStepViewerScreen(Screen):
         self.add_widget(layout)
 
     def on_load_step_data(self, *args):
+        self.steps_text = ""
         steps = get_user_steps(self.user_step_command_id)
         for step in steps:
             if step.command.is_adb:

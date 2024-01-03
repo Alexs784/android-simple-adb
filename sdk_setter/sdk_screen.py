@@ -6,7 +6,7 @@ from kivy.uix.textinput import TextInput
 
 from screen_manager.screen_constants import HOME_SCREEN
 from screen_manager.utils import navigate_to_screen
-from sdk_setter.utils import store_sdk_directory as store_sdk
+from sdk_setter.utils import trigger_store_sdk_directory, check_default_android_sdk_location
 from sdk_setter.utils import get_stored_sdk_directory
 
 
@@ -46,7 +46,11 @@ class SdkScreen(Screen):
 
         self.add_widget(layout)
 
+    def on_pre_enter(self, *args):
+        if check_default_android_sdk_location():
+            navigate_to_screen(self.manager, HOME_SCREEN)
+
     def store_sdk_directory(self, *args):
-        stored_successfully = store_sdk(self.sdk_location_text_input.text)
+        stored_successfully = trigger_store_sdk_directory(self.sdk_location_text_input.text)
         if stored_successfully:
             navigate_to_screen(self.manager, HOME_SCREEN)

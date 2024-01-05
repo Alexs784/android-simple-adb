@@ -172,6 +172,10 @@ class ScriptEditorScreen(Screen):
             user_steps_for_script = get_grouped_user_steps_for_script(self.script_id)
             self.user_steps_list_size = len(user_steps_for_script)
             self.update_run_script_button_state()
+            list_parent = self.user_steps_list.parent
+            list_parent.remove_widget(self.user_steps_list)
+            self.user_steps_list = build()
+            list_parent.add_widget(self.user_steps_list)
             self.user_steps_list.data = [
                 EditorRecycleViewItem().build(root_widget=self, text=item.name, user_step_id=item.id,
                                               user_step_command_id=item.command_id)

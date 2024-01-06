@@ -20,7 +20,7 @@ def check_default_android_sdk_location():
         'Linux': '/home/$USER/Android/Sdk/'
     }
 
-    current_os = platform.system()
+    current_os = get_current_platform()
     default_android_sdk_path = os_default_paths.get(current_os)
     if default_android_sdk_path:
         # Replace placeholders with actual environment variables
@@ -51,7 +51,13 @@ def get_adb():
     with shelve.open("settings") as storage:
         directory_path = storage.get("sdk_directory", "")
         platform_tools_directory = path.join(directory_path, "platform-tools")
-        adb_file = path.join(platform_tools_directory, "adb")
+
+        if get_current_platform() == 'Windows':
+            adb_filename = "adb.exe"
+        else:
+            adb_filename = "adb"
+
+        adb_file = path.join(platform_tools_directory, adb_filename)
         return adb_file
 
 
@@ -81,3 +87,7 @@ def store_sdk_directory(sdk_location):
     with shelve.open("settings") as storage:
         storage["sdk_directory"] = sdk_location
     return True
+
+
+def get_current_platform():
+    return platform.system()

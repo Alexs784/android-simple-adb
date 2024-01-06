@@ -1,5 +1,5 @@
 from kivy.metrics import dp
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, NumericProperty
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen
 
@@ -15,6 +15,7 @@ from kivy.uix.label import Label
 
 class UserStepViewerScreen(Screen):
     user_step_command_id = StringProperty('')
+    script_id = NumericProperty(-1)
     steps_text = StringProperty('')
 
     def __init__(self, **kwargs):
@@ -72,13 +73,9 @@ class UserStepViewerScreen(Screen):
         show_confirmation_popup(
             "Deleting step",
             "Are you sure you want to delete this step from the current script?",
-            self.delete_script
+            self.delete_user_steps
         )
 
-    def delete_script(self):
-        print(self.user_step_command_id)
-        delete_user_steps(self.user_step_command_id)
-        script_editor_screen = get_screen_by_name(self.manager, SCRIPT_EDITOR_SCREEN)
-        if script_editor_screen is not None:
-            script_editor_screen.update_user_steps_list()
+    def delete_user_steps(self):
+        delete_user_steps(self.user_step_command_id, self.script_id)
         self.go_back()

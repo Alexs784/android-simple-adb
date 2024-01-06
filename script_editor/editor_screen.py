@@ -239,4 +239,5 @@ class ScriptEditorScreen(Screen):
     def on_user_step_click(self, user_step_command_id):
         step_viewer_screen = self.manager.get_screen(STEP_VIEWER_SCREEN)
         step_viewer_screen.user_step_command_id = user_step_command_id
+        step_viewer_screen.script_id = self.script_id
         navigate_to_screen(self.manager, STEP_VIEWER_SCREEN)

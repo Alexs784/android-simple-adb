@@ -9,9 +9,22 @@ def get_user_steps(user_step_command_id):
     return user_steps
 
 
-def delete_user_steps(user_step_command_id):
+def delete_user_steps(user_step_command_id, script_id):
     session = get_session()
-    session.query(UserStep).filter(UserStep.command_id == user_step_command_id).delete()
+    user_steps = session.query(UserStep) \
+        .filter(UserStep.command_id == user_step_command_id) \
+        .all()
+
+    deleted_position = -1
+    for user_step in user_steps:
+        deleted_position = user_step.position
+        session.delete(user_step)
+
+    if deleted_position != -1:
+        session.query(UserStep).filter_by(script_id=script_id) \
+            .filter(UserStep.position > deleted_position) \
+            .update({"position": UserStep.position - 1}, synchronize_session=False)
+
     session.commit()
     session.close()
 
@@ -44,10 +57,20 @@ def save_user_steps_in_database(user_steps):
     else:
         position_offset = len(existing_grouped_user_steps)
 
+    grouped_user_steps_to_save = {}
+    for user_step in user_steps:
+        if user_step.command_id not in grouped_user_steps_to_save:
+            grouped_user_steps_to_save[user_step.command_id] = []
+        grouped_user_steps_to_save[user_step.command_id].append(user_step)
+
     session = get_session()
-    for index, user_step in enumerate(user_steps):
-        user_step.position = index + position_offset
-        session.add(user_step)
+    for group_index, (command_id, user_steps) in enumerate(grouped_user_steps_to_save.items()):
+        for user_step in user_steps:
+            position = group_index + position_offset
+            user_step.position = position
+            print((f"Saving user step {user_step.name} with command:\n{user_step.command}\nand position {position}"))
+            session.add(user_step)
+
     session.commit()
     session.close()
 

@@ -32,7 +32,7 @@ def check_default_android_sdk_location():
 def is_valid_adb_file(android_sdk_directory):
     if path.exists(android_sdk_directory):
         platform_tools_directory = path.join(android_sdk_directory, "platform-tools")
-        adb_file = path.join(platform_tools_directory, "adb")
+        adb_file = path.join(platform_tools_directory, get_adb_filename())
         return path.isfile(adb_file)
 
 
@@ -51,13 +51,7 @@ def get_adb():
     with shelve.open("settings") as storage:
         directory_path = storage.get("sdk_directory", "")
         platform_tools_directory = path.join(directory_path, "platform-tools")
-
-        if get_current_platform() == 'Windows':
-            adb_filename = "adb.exe"
-        else:
-            adb_filename = "adb"
-
-        adb_file = path.join(platform_tools_directory, adb_filename)
+        adb_file = path.join(platform_tools_directory, get_adb_filename())
         return adb_file
 
 
@@ -91,3 +85,10 @@ def store_sdk_directory(sdk_location):
 
 def get_current_platform():
     return platform.system()
+
+
+def get_adb_filename():
+    if get_current_platform() == 'Windows':
+        return "adb.exe"
+    else:
+        return "adb"
